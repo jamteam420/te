@@ -29,7 +29,14 @@ git remote add origin https://jamteam420@github.com/jamteam420/te.git
 ### Alternativa: usar PAT en la URL para no ingresar credenciales cada vez
 
 ```bash
-git remote add origin https://jamteam420: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@github.com/jamteam420/te.git
+git remote add origin https://jamteam420:TU_TOKEN@github.com/jamteam420/te.git
+```
+
+> Generar el token en [github.com/settings/tokens](https://github.com/settings/tokens) con permisos de `repo`.
+
+### Para settear el token si no permite hacer push:
+```bash
+git remote set-url origin https://jamteam420:TU_TOKEN@github.com/jamteam420/te.git
 ```
 
 ### Si ya tenés el remote configurado con otro usuario
@@ -82,7 +89,7 @@ Esto crea/actualiza la rama `gh-pages` automáticamente y la sube.
 En unos minutos, la página va a estar live en:
 
 ```
-https://TU_USUARIO.github.io/te/
+https://jamteam420.github.io/te/
 ```
 
 ## Actualizar el deploy
