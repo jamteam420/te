@@ -1,0 +1,123 @@
+<div class="page-wrapper">
+  <!-- Textura grain overlay -->
+  <div class="grain-overlay"></div>
+
+  <header class="header">
+    <div class="header__leaf header__leaf--left">&#127811;</div>
+    <div class="header__content">
+      <h1 class="header__title">Casa de T&eacute;</h1>
+      <p class="header__subtitle">Registro de Retiros</p>
+    </div>
+    <div class="header__leaf header__leaf--right">&#127861;</div>
+  </header>
+
+  <main class="main">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="retiro-form" autocomplete="off">
+
+      <!-- Socio -->
+      <div class="form-field" [class.form-field--error]="isInvalid('socio')">
+        <label class="form-field__label" for="socio">Nombre del socio</label>
+        <div class="form-field__input-wrapper">
+          <select id="socio" formControlName="socio" class="form-field__select">
+            <option value="" disabled>Seleccion&aacute; un socio</option>
+            @for (s of socios; track s) {
+              <option [value]="s">{{ s }}</option>
+            }
+          </select>
+          <span class="form-field__arrow">&#x25BE;</span>
+        </div>
+        @if (isInvalid('socio')) {
+          <span class="form-field__error">Seleccion&aacute; un socio</span>
+        }
+      </div>
+
+      <!-- Variedad -->
+      <div class="form-field" [class.form-field--error]="isInvalid('variedad')">
+        <label class="form-field__label" for="variedad">Variedad</label>
+        <div class="form-field__input-wrapper">
+          <select id="variedad" formControlName="variedad" class="form-field__select">
+            <option value="" disabled>Seleccion&aacute; una variedad</option>
+            @for (v of variedades; track v) {
+              <option [value]="v">{{ v }}</option>
+            }
+          </select>
+          <span class="form-field__arrow">&#x25BE;</span>
+        </div>
+        @if (isInvalid('variedad')) {
+          <span class="form-field__error">Seleccion&aacute; una variedad</span>
+        }
+      </div>
+
+      <!-- Pagador -->
+      <div class="form-field" [class.form-field--error]="isInvalid('pagador')">
+        <label class="form-field__label" for="pagador">A qui&eacute;n le paga</label>
+        <div class="form-field__input-wrapper">
+          <select id="pagador" formControlName="pagador" class="form-field__select">
+            <option value="" disabled>Seleccion&aacute; una opci&oacute;n</option>
+            @for (p of pagadores; track p) {
+              <option [value]="p">{{ p }}</option>
+            }
+          </select>
+          <span class="form-field__arrow">&#x25BE;</span>
+        </div>
+        @if (isInvalid('pagador')) {
+          <span class="form-field__error">Seleccion&aacute; a qui&eacute;n le paga</span>
+        }
+      </div>
+
+      <!-- Gramos -->
+      <div class="form-field" [class.form-field--error]="isInvalid('gramos')">
+        <label class="form-field__label" for="gramos">Gramos</label>
+        <div class="form-field__input-wrapper">
+          <input
+            id="gramos"
+            type="number"
+            formControlName="gramos"
+            class="form-field__input"
+            placeholder="Ej: 250"
+            min="1"
+          />
+          <span class="form-field__unit">g</span>
+        </div>
+        @if (isInvalid('gramos')) {
+          <span class="form-field__error">Ingres&aacute; una cantidad v&aacute;lida (m&iacute;nimo 1g)</span>
+        }
+      </div>
+
+      <!-- Submit -->
+      <div class="form-actions">
+        <button
+          type="submit"
+          class="btn-submit"
+          [disabled]="isLoading()"
+          [class.btn-submit--loading]="isLoading()"
+        >
+          @if (isLoading()) {
+            <span class="btn-submit__spinner"></span>
+            Registrando...
+          } @else {
+            Confirmar Retiro
+          }
+        </button>
+      </div>
+    </form>
+
+    <!-- Feedback toast -->
+    @if (showFeedback()) {
+      <div
+        class="toast"
+        [class.toast--success]="feedbackType() === 'success'"
+        [class.toast--error]="feedbackType() === 'error'"
+      >
+        <span class="toast__icon">
+          {{ feedbackType() === 'success' ? '\u2713' : '\u2715' }}
+        </span>
+        <span class="toast__message">{{ feedbackMessage() }}</span>
+      </div>
+    }
+  </main>
+
+  <footer class="footer">
+    <p>Casa de T&eacute; &middot; Registro de retiros</p>
+  </footer>
+</div>

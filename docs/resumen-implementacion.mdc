@@ -1,0 +1,176 @@
+# Casa de Té — Resumen de Implementación
+
+## Descripción
+
+Aplicación web de una sola página para registrar retiros de clientes de una casa de té. Permite ingresar: nombre del socio, variedad de té, a quién le paga, y gramos. Al confirmar, los datos se escriben automáticamente en una planilla de Google Sheets.
+
+## Stack Tecnológico
+
+| Tecnología | Versión | Rol |
+|---|---|---|
+| Angular | 21.x (standalone) | Framework frontend |
+| TypeScript | 5.x | Lenguaje |
+| SCSS | — | Estilos |
+| Google Apps Script | — | Backend (escritura en Google Sheets) |
+| GitHub Pages | — | Hosting gratuito |
+
+## Arquitectura
+
+```
+Frontend (Angular)  ──POST JSON──▶  Google Apps Script (Web App)  ──▶  Google Sheets
+```
+
+- **Sin backend propio**: la app Angular es 100% estática.
+- **Google Apps Script** actúa como endpoint intermediario (`doPost`) que recibe el JSON y escribe una fila en la hoja.
+- **Sin autenticación del usuario**: el script se ejecuta como el dueño de la hoja.
+
+## Estructura del Proyecto
+
+```
+te-app/
+├── src/
+│   ├── index.html                          # HTML base con Google Fonts
+│   ├── main.ts                             # Bootstrap de la app
+│   ├── styles.scss                         # Estilos globales (paleta, reset, tipografía)
+│   ├── app/
+│   │   ├── app.ts                          # Componente raíz (formulario reactivo)
+│   │   ├── app.html                        # Template del formulario
+│   │   ├── app.scss                        # Estilos del componente (animaciones, responsive)
+│   │   ├── app.config.ts                   # Providers (HttpClient)
+│   │   ├── data/
+│   │   │   └── opciones.data.ts            # Arrays de socios, variedades, pagadores
+│   │   ├── models/
+│   │   │   └── retiro.model.ts             # Interfaz TypeScript Retiro
+│   │   └── services/
+│   │       └── sheets.service.ts           # Servicio HTTP → Google Apps Script
+│   └── environments/
+│       ├── environment.ts                  # Config dev (URL del script)
+│       └── environment.prod.ts             # Config prod
+├── docs/
+│   ├── google-apps-script.js               # Código para copiar en Apps Script
+│   └── resumen-implementacion.mdc          # Este archivo
+├── angular.json                            # Configuración Angular + file replacements
+├── package.json                            # Scripts: start, build, build:ghpages
+└── tsconfig.json
+```
+
+## Diseño y Estética
+
+**Dirección**: Orgánico / Natural — evocando el mundo del té.
+
+### Tipografía
+- **Display**: Cormorant Garamond (títulos)
+- **Body**: Lora (labels, textos, inputs)
+- Fuente: Google Fonts (precargadas con `preconnect`)
+
+### Paleta de Colores
+| Variable | Color | Hex |
+|---|---|---|
+| `--color-bg` | Beige cálido | `#f5f0e8` |
+| `--color-surface` | Blanco cremoso | `#faf8f4` |
+| `--color-primary` | Verde bosque | `#2d5016` |
+| `--color-primary-light` | Verde claro | `#3d6b22` |
+| `--color-accent` | Ámbar/dorado | `#c8943e` |
+| `--color-text` | Marrón oscuro | `#3b2f20` |
+| `--color-text-muted` | Marrón suave | `#7a6c5d` |
+| `--color-error` | Rojo | `#9b2c2c` |
+| `--color-success` | Verde | `#276749` |
+
+### Efectos Visuales
+- **Grain overlay**: textura SVG animada tipo papel artesanal
+- **Fade-in staggered**: los campos aparecen secuencialmente al cargar
+- **Micro-interacciones**: hover en inputs (borde ámbar), focus (borde verde + glow)
+- **Botón submit**: gradiente verde con efecto hover elevado
+- **Toast de feedback**: slide-in desde abajo con animación
+
+### Responsive
+- **Mobile-first** con SCSS mixins (`$bp-sm: 480px`, `$bp-md: 768px`, `$bp-lg: 1024px`)
+- Mobile: campos apilados, botón full-width
+- Desktop: formulario centrado (max-width 600px), mayor espaciado
+
+## Formulario
+
+### Campos
+| Campo | Tipo | Fuente de datos | Validación |
+|---|---|---|---|
+| Nombre del socio | `<select>` | `SOCIOS` en `opciones.data.ts` | Requerido |
+| Variedad | `<select>` | `VARIEDADES` en `opciones.data.ts` | Requerido |
+| A quién le paga | `<select>` | `PAGADORES` en `opciones.data.ts` | Requerido |
+| Gramos | `<input type="number">` | Manual | Requerido, mínimo 1 |
+
+### Flujo de Submit
+1. Usuario completa el formulario y presiona "Confirmar Retiro"
+2. Se validan todos los campos (si hay errores, se marcan en rojo)
+3. Se muestra spinner de loading en el botón
+4. `SheetsService.enviarRetiro()` hace `fetch()` POST al Google Apps Script
+5. Apps Script parsea el JSON, agrega timestamp, escribe fila en la hoja
+6. Se muestra toast de éxito/error (desaparece en 4 segundos)
+7. En éxito: se resetea el formulario
+
+### Datos de Ejemplo (editables)
+```typescript
+// src/app/data/opciones.data.ts
+SOCIOS: ['Juan Pérez', 'María García', 'Carlos López', 'Ana Martínez', 'Pedro Rodríguez']
+VARIEDADES: ['Gyokuro', 'Sencha', 'Matcha', 'Oolong', 'Pu-erh', 'Earl Grey', 'Darjeeling', 'Chai', 'Rooibos']
+PAGADORES: ['Efectivo en caja', 'Juan Pérez', 'María García', 'Carlos López']
+```
+
+## Google Sheets — Integración
+
+### Enfoque: Google Apps Script como Web App
+- **Sin OAuth, sin API key, sin backend**
+- El script `doPost()` recibe el JSON del formulario y escribe en la hoja
+- Cuota gratuita: ~20,000 llamadas/día
+
+### Columnas en la hoja
+| A | B | C | D | E |
+|---|---|---|---|---|
+| Fecha/Hora | Socio | Variedad | A quién le paga | Gramos |
+
+### URL del Apps Script configurada
+La URL del Web App desplegado está en `src/environments/environment.ts`:
+```
+googleScriptUrl: 'https://script.google.com/macros/s/..../exec'
+```
+
+### Setup del Apps Script (paso a paso)
+1. Abrir la Google Sheet
+2. Extensiones → Apps Script
+3. Pegar el contenido de `docs/google-apps-script.js`
+4. Guardar
+5. Implementar → Nueva implementación → Web App
+6. Ejecutar como: "Yo" / Acceso: "Cualquier persona"
+7. Copiar la URL y pegarla en `environment.ts`
+
+## Deploy
+
+### Desarrollo local
+```bash
+nvm use 20
+ng serve
+# → http://localhost:4200
+```
+
+### Build para GitHub Pages
+```bash
+npm run build:ghpages
+# Output: dist/te-app/browser/
+```
+
+### Requisitos
+- Node.js ≥ 18.13 (recomendado v20)
+- npm ≥ 10
+- Angular CLI (via npx)
+
+## Decisiones Técnicas
+
+| Decisión | Razón |
+|---|---|
+| Google Apps Script sobre Sheets API directa | No requiere OAuth, no expone el ID de la hoja, gratis, ~15 líneas de código |
+| `fetch()` nativo sobre `HttpClient` para el POST | Apps Script devuelve redirect 302 que `HttpClient` no maneja bien cross-origin |
+| `text/plain` como Content-Type | Evita CORS preflight (no se envía OPTIONS request) |
+| Reactive Forms sobre Template-driven | Tipado fuerte, validación programática |
+| SCSS custom sobre Angular Material | Estética única (skill frontend-design), sin dependencias pesadas |
+| Datos hardcodeados en archivo separado | Fácil edición sin tocar lógica de componentes |
+| Standalone components (sin NgModule) | Default en Angular 17+, más simple |
+| Signals de Angular | Estado reactivo moderno (`isLoading`, `feedbackMessage`, etc.) |

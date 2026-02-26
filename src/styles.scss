@@ -1,0 +1,77 @@
+/* ============================================================
+   Casa de Te - Global Styles
+   Estetica: organica / natural - tonos tierra, verde bosque,
+   texturas artesanales, tipografia refinada.
+   ============================================================ */
+
+:root {
+  /* --- Paleta --- */
+  --color-bg: #f5f0e8;
+  --color-surface: #faf8f4;
+  --color-primary: #2d5016;
+  --color-primary-light: #3d6b22;
+  --color-primary-dark: #1e3a0e;
+  --color-accent: #c8943e;
+  --color-accent-light: #dbb06a;
+  --color-text: #3b2f20;
+  --color-text-muted: #7a6c5d;
+  --color-border: #d4cbbf;
+  --color-border-focus: #5a8a3a;
+  --color-error: #9b2c2c;
+  --color-error-bg: #fef2f2;
+  --color-success: #276749;
+  --color-success-bg: #f0fdf4;
+
+  /* --- Tipografia --- */
+  --font-display: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+  --font-body: 'Lora', Georgia, serif;
+
+  /* --- Espaciado --- */
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+
+  /* --- Sombras --- */
+  --shadow-sm: 0 1px 3px rgba(59, 47, 32, 0.08);
+  --shadow-md: 0 4px 16px rgba(59, 47, 32, 0.1);
+  --shadow-lg: 0 8px 32px rgba(59, 47, 32, 0.12);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--font-body);
+  color: var(--color-text);
+  background-color: var(--color-bg);
+  line-height: 1.6;
+  min-height: 100dvh;
+}
+
+/* Eliminar spinners en input number */
+input[type='number']::-webkit-outer-spin-button,
+input[type='number']::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type='number'] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+/* Focus visible accesible */
+:focus-visible {
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: 2px;
+}

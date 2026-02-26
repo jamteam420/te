@@ -1,0 +1,95 @@
+# Deploy en GitHub Pages
+
+## 1. Crear el repositorio en GitHub
+
+Ir a [github.com/new](https://github.com/new) y crear un repo (ej: `te`). Puede ser público o privado.
+
+## 2. Configurar git con un usuario específico
+
+### Inicializar el repo y configurar el usuario local
+
+```bash
+cd /Users/martinross/Documents/code/te/te-app
+nvm use 20
+git init
+git config user.name "jamteam420"
+git config user.email "ccjamteam@gmail.com"
+```
+
+> Esto configura el usuario **solo para este repo** (sin `--global`).
+
+### Agregar el remote con el usuario
+
+```bash
+git remote add origin https://jamteam420@github.com/jamteam420/te.git
+```
+
+> Al hacer push te va a pedir la contraseña o Personal Access Token (PAT) de ese usuario.
+
+### Alternativa: usar PAT en la URL para no ingresar credenciales cada vez
+
+```bash
+git remote add origin https://jamteam420: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@github.com/jamteam420/te.git
+```
+
+### Si ya tenés el remote configurado con otro usuario
+
+```bash
+git remote set-url origin https://jamteam420@github.com/jamteam420/te.git
+```
+
+### Verificar la configuración
+
+```bash
+git config user.name     # usuario del repo
+git config user.email    # email del repo
+git remote -v            # ver a dónde apunta el remote
+```
+
+### Subir el código
+
+```bash
+git add .
+git commit -m "initial commit"
+git branch -M main
+git push -u origin main
+```
+
+## 3. Hacer el build para GitHub Pages
+
+```bash
+npx ng build --configuration production --base-href /te/
+```
+
+> Reemplazar `/te/` por el nombre del repo si es diferente.
+
+El output queda en `dist/te-app/browser/`.
+
+## 4. Publicar con angular-cli-ghpages
+
+```bash
+npx angular-cli-ghpages --dir=dist/te-app/browser
+```
+
+Esto crea/actualiza la rama `gh-pages` automáticamente y la sube.
+
+## 5. Activar GitHub Pages en el repo
+
+1. Ir a **Settings → Pages** en el repositorio
+2. En **Source** elegir la rama `gh-pages` / carpeta `/ (root)`
+3. Guardar
+
+En unos minutos, la página va a estar live en:
+
+```
+https://TU_USUARIO.github.io/te/
+```
+
+## Actualizar el deploy
+
+Cada vez que se quiera actualizar la página publicada:
+
+```bash
+npx ng build --configuration production --base-href /te/
+npx angular-cli-ghpages --dir=dist/te-app/browser
+```
