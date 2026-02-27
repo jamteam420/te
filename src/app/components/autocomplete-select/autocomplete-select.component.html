@@ -1,0 +1,56 @@
+<div class="ac-wrapper">
+  <input
+    #inputEl
+    [id]="inputId"
+    type="text"
+    class="ac-input"
+    [placeholder]="placeholder"
+    [value]="inputValue()"
+    [disabled]="isDisabled"
+    autocomplete="off"
+    spellcheck="false"
+    role="combobox"
+    aria-haspopup="listbox"
+    [attr.aria-expanded]="isOpen()"
+    [attr.aria-activedescendant]="activeIndex() >= 0 ? 'ac-opt-' + activeIndex() : null"
+    (input)="onInputChange($event)"
+    (focus)="onInputFocus()"
+    (blur)="onInputBlur()"
+  />
+
+  <button
+    type="button"
+    class="ac-toggle"
+    [class.ac-toggle--open]="isOpen()"
+    [disabled]="isDisabled"
+    tabindex="-1"
+    aria-label="Abrir opciones"
+    (click)="toggleDropdown()"
+  >
+    &#x25BE;
+  </button>
+
+  @if (isOpen()) {
+    @if (filteredOptions().length > 0) {
+      <ul class="ac-dropdown" role="listbox">
+        @for (option of filteredOptions(); track option; let i = $index) {
+          <li
+            [id]="'ac-opt-' + i"
+            class="ac-option"
+            [class.ac-option--active]="i === activeIndex()"
+            [class.ac-option--selected]="option === inputValue()"
+            role="option"
+            [attr.aria-selected]="option === inputValue()"
+            (mousedown)="selectOption(option)"
+          >
+            {{ option }}
+          </li>
+        }
+      </ul>
+    } @else {
+      <div class="ac-dropdown ac-dropdown--empty" role="status">
+        Sin resultados
+      </div>
+    }
+  }
+</div>

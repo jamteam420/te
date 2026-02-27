@@ -17,15 +17,12 @@
       <!-- Socio -->
       <div class="form-field" [class.form-field--error]="isInvalid('socio')">
         <label class="form-field__label" for="socio">Nombre del socio</label>
-        <div class="form-field__input-wrapper">
-          <select id="socio" formControlName="socio" class="form-field__select">
-            <option value="" disabled>Seleccion&aacute; un socio</option>
-            @for (s of socios; track s) {
-              <option [value]="s">{{ s }}</option>
-            }
-          </select>
-          <span class="form-field__arrow">&#x25BE;</span>
-        </div>
+        <app-autocomplete-select
+          inputId="socio"
+          formControlName="socio"
+          [options]="socios"
+          placeholder="Seleccion&aacute; un socio"
+        ></app-autocomplete-select>
         @if (isInvalid('socio')) {
           <span class="form-field__error">Seleccion&aacute; un socio</span>
         }
@@ -37,8 +34,8 @@
         <div class="form-field__input-wrapper">
           <select id="variedad" formControlName="variedad" class="form-field__select">
             <option value="" disabled>Seleccion&aacute; una variedad</option>
-            @for (v of variedades; track v) {
-              <option [value]="v">{{ v }}</option>
+            @for (variedad of variedades; track variedad) {
+              <option [value]="variedad">{{ variedad }}</option>
             }
           </select>
           <span class="form-field__arrow">&#x25BE;</span>
@@ -54,8 +51,8 @@
         <div class="form-field__input-wrapper">
           <select id="pagador" formControlName="pagador" class="form-field__select">
             <option value="" disabled>Seleccion&aacute; una opci&oacute;n</option>
-            @for (p of pagadores; track p) {
-              <option [value]="p">{{ p }}</option>
+            @for (pagador of pagadores; track pagador) {
+              <option [value]="pagador">{{ pagador }}</option>
             }
           </select>
           <span class="form-field__arrow">&#x25BE;</span>
@@ -76,6 +73,11 @@
             class="form-field__input"
             placeholder="Ej: 250"
             min="1"
+            step="1"
+            inputmode="numeric"
+            (keydown)="onGramosKeydown($event)"
+            (paste)="onGramosPaste($event)"
+            (input)="onGramosInput()"
           />
           <span class="form-field__unit">g</span>
         </div>
@@ -83,6 +85,14 @@
           <span class="form-field__error">Ingres&aacute; una cantidad v&aacute;lida (m&iacute;nimo 1g)</span>
         }
       </div>
+
+      <!-- Precio calculado -->
+      @if (precioCalculado() !== null) {
+        <div class="precio-display">
+          <span class="precio-display__label">Precio</span>
+          <span class="precio-display__value">${{ precioCalculado() }}</span>
+        </div>
+      }
 
       <!-- Submit -->
       <div class="form-actions">

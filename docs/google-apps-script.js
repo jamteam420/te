@@ -7,6 +7,7 @@
  *    A1: Fecha/Hora | B1: Socio | C1: Variedad | D1: A quién le paga | E1: Gramos
  * 3. Andá a Extensiones → Apps Script.
  * 4. Borrá todo el contenido del editor y pegá este código.
+ *    F1: Precio
  * 5. Guardá (Ctrl+S / Cmd+S).
  * 6. Hacé click en "Implementar" (Deploy) → "Nueva implementación" (New deployment).
  * 7. Tipo: "Aplicación web" (Web app).
@@ -34,6 +35,7 @@ function doPost(e) {
       data.variedad || '',
       data.pagador || '',
       data.gramos || 0,
+      data.precio || 0,
     ]);
 
     return ContentService.createTextOutput(

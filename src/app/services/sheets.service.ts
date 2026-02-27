@@ -22,6 +22,7 @@ export class SheetsService {
       variedad: retiro.variedad,
       pagador: retiro.pagador,
       gramos: retiro.gramos,
+      precio: retiro.precio ?? 0,
     };
 
     // Google Apps Script web app devuelve un redirect (302), por eso usamos

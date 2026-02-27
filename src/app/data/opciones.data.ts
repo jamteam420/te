@@ -48,3 +48,14 @@ export const PAGADORES: string[] = [
   'Caja Andi',
   'Caja Felipe'
 ];
+
+/**
+ * Socios con precio especial (multiplicador reducido por gramo).
+ * Editá este array para cambiar quién tiene precio especial.
+ */
+export const SOCIOS_PRECIO_ESPECIAL: string[] = [
+  'Martín Ross',
+  "Andres Seferian",
+  "Felipe García",
+  "Javier Magallanes (Tato)"
+];

@@ -3,4 +3,5 @@ export interface Retiro {
   variedad: string;
   pagador: string;
   gramos: number;
+  precio?: number;
 }

@@ -1,0 +1,162 @@
+// --- Autocomplete Select Component ---
+// Mirrors the visual style of .form-field__select / .form-field__input
+// defined in the parent app.scss, using the same CSS custom properties.
+
+.ac-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+// --- Input ---
+.ac-input {
+  width: 100%;
+  padding: 0.75rem 2.5rem 0.75rem 1rem; // right padding for the arrow
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  color: var(--color-text);
+  background-color: var(--color-bg);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease,
+    background-color 0.3s ease;
+  appearance: none;
+  cursor: text;
+
+  &::placeholder {
+    color: var(--color-text-muted);
+    opacity: 0.7;
+  }
+
+  &:hover {
+    border-color: var(--color-accent-light);
+  }
+
+  &:focus {
+    outline: none;
+    border-color: var(--color-border-focus);
+    box-shadow: 0 0 0 3px rgba(90, 138, 58, 0.15);
+    background-color: #fff;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  @media (min-width: 768px) {
+    padding: 0.85rem 2.5rem 0.85rem 1.1rem;
+  }
+}
+
+// Error state via parent context (mirrors .form-field--error .form-field__select)
+:host-context(.form-field--error) .ac-input {
+  border-color: var(--color-error);
+  background-color: var(--color-error-bg);
+
+  &:focus {
+    box-shadow: 0 0 0 3px rgba(155, 44, 44, 0.12);
+  }
+}
+
+// --- Arrow toggle button ---
+.ac-toggle {
+  position: absolute;
+  right: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: color 0.3s ease, transform 0.25s ease;
+  line-height: 1;
+
+  &:hover {
+    color: var(--color-text);
+  }
+
+  &--open {
+    transform: rotate(180deg);
+    color: var(--color-border-focus);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+}
+
+// --- Dropdown panel ---
+.ac-dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  z-index: 500;
+  background-color: var(--color-surface);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  max-height: 220px;
+  overflow-y: auto;
+  list-style: none;
+  padding: 0.35rem 0;
+  animation: acFadeIn 0.15s ease-out;
+
+  // Thin scrollbar
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border) transparent;
+
+  &--empty {
+    max-height: none;
+    padding: 0.75rem 1rem;
+    font-family: var(--font-body);
+    font-size: 0.88rem;
+    color: var(--color-text-muted);
+    font-style: italic;
+  }
+}
+
+// --- Option items ---
+.ac-option {
+  padding: 0.6rem 1rem;
+  font-family: var(--font-body);
+  font-size: 0.93rem;
+  color: var(--color-text);
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+  line-height: 1.4;
+
+  &:hover,
+  &--active {
+    background-color: rgba(90, 138, 58, 0.09);
+    color: var(--color-primary);
+  }
+
+  &--selected {
+    font-weight: 600;
+    color: var(--color-primary);
+    background-color: rgba(90, 138, 58, 0.06);
+  }
+
+  // Both active & selected
+  &--active#{&}--selected {
+    background-color: rgba(90, 138, 58, 0.14);
+  }
+}
+
+@keyframes acFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
