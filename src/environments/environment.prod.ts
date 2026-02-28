@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  googleScriptUrl: 'https://script.google.com/macros/s/AKfycbzqNghebwlOogDckI4OxQSVAiEfUDFkrCggX3r2Go2-tHlpwF4o5YzeW3oWNhV8ujYQmg/exec', // Reemplazar con la URL de tu Google Apps Script
+  googleScriptUrl: 'https://script.google.com/macros/s/AKfycbxqVeZYjDZfcHRkDrk62uA8Ra23s4bY8L6pkcdu72q7bsMy-cqOT_ww9K8MbgaJNh15QA/exec', // Reemplazar con la URL de tu Google Apps Script
 };

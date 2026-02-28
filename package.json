@@ -6,6 +6,7 @@
     "start": "ng serve",
     "build": "ng build",
     "build:ghpages": "ng build --base-href /te/",
+    "deploy": "bash deploy.sh",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },
